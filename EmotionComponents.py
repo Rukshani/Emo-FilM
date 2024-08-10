@@ -6,6 +6,7 @@ through hierarchical clustering based on Euclidean distance
 
 """
 
+import numpy as np
 import pandas as pd
 import scipy.cluster.hierarchy as shc
 from matplotlib import pyplot as plt
@@ -62,7 +63,9 @@ class EmotionComponents:
         grid_vector = {}
 
         for emo in self.sorted_discrete_items:
-            value = emo_dic[emo] / emo_value[emo]
+            emo_dic_arr = np.array(emo_dic[emo])
+            emo_value_arr = np.array(emo_value[emo])
+            value = emo_dic_arr / emo_value_arr
             grid_vector[emo] = value
 
         df_gew_grid_hc_scaled = pd.DataFrame.from_dict(grid_vector).T
