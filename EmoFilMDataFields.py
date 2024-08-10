@@ -34,5 +34,14 @@ sorted_all_items = ['incongruent with your standards_A', 'unpleasant for you_A',
                     'Disgust', 'Happiness', 'Fear', 'Regard', 'Anxiety', 'Satisfaction', 'Pride',
                     'Surprise', 'Love', 'Sad']
 
+# 50 sorted (shortened) all items
+sorted_all_items_shortened = ['Standards', 'PleasantSelf', 'SocialNorms', 'PleasantOther', 'GoalsOther',
+                              'Controlled', 'Predictable', 'Suddenly', 'Agent', 'Urgency', 'Lips', 'Tears',
+                              'Eyebrows', 'Smile', 'Frown', 'Stop', 'Undo', 'Repeat', 'Oppose', 'Attention',
+                              'Tackle', 'Command', 'Support', 'Move', 'Care', 'Bad', 'Good', 'Calm', 'Strong',
+                              'IntenseEmotion', 'Alert', 'AtEase', 'Muscle', 'Heartrate', 'Throat', 'Stomach',
+                              'Warm', 'Anger', 'Guilt', 'WarmHeartedness', 'Disgust', 'Happiness', 'Fear', 'Regard',
+                              'Anxiety', 'Satisfaction', 'Pride', 'Surprise', 'Love', 'Sad']
+
 # 37 sorted CoreGRID items
 sorted_grid_items = sorted_all_items[0:37]
