@@ -80,8 +80,8 @@ class MulticlassModellingAllEmo:
         df_scaled_csv = self.scale_data(df, self.sorted_grid_items + self.sorted_discrete_items)
 
         df_scaled = df_scaled_csv.copy()
-        df_scaled['emo_max_index'] = np.NaN
-        df_scaled['emo_max_name'] = np.NaN
+        df_scaled['emo_max_index'] = np.nan
+        df_scaled['emo_max_name'] = np.nan
 
         for index, row in df_scaled.iterrows():
             max_col_index = np.argmax(row[self.sorted_discrete_items].values)
@@ -130,8 +130,8 @@ class MulticlassModellingAllEmo:
         df_scaled_lofo_csv = self.scale_data(df, self.sorted_grid_items + self.sorted_discrete_items)
 
         df_scaled_lofo = df_scaled_lofo_csv.copy()
-        df_scaled_lofo['emo_max_index'] = np.NaN
-        df_scaled_lofo['emo_max_name'] = np.NaN
+        df_scaled_lofo['emo_max_index'] = np.nan
+        df_scaled_lofo['emo_max_name'] = np.nan
 
         for index, row in df_scaled_lofo.iterrows():
             max_col_index = np.argmax(row[self.sorted_discrete_items].values)
@@ -231,7 +231,7 @@ class MulticlassModellingAllEmo:
                                     learning_rate=init_learning_rate, n_estimators=init_n_estimators,
                                     max_depth=init_max_depth, min_child_weight=init_min_child_weight, gamma=0,
                                     subsample=init_subsample, colsample_bytree=init_colsample_bytree, max_delta_step=10)
-            clf.fit(x_train_sample, y_train_sample, eval_metric='merror', verbose=False)
+            clf.fit(x_train_sample, y_train_sample, verbose=False)
 
             y_predict = clf.predict(x_test)
             init_acc = accuracy_score(y_test, y_predict)
@@ -270,7 +270,7 @@ class MulticlassModellingAllEmo:
             print("Best params: {},{} merror: {}".format(best_params[0], best_params[1], min_mae))
 
             clf.set_params(max_depth=best_params[0], min_child_weight=best_params[1])
-            clf.fit(x_train_sample, y_train_sample, eval_metric='merror')
+            clf.fit(x_train_sample, y_train_sample)
             predictions_test = clf.predict(x_test)
             accuracy_test1 = accuracy_score(y_test, predictions_test)
             print("Final Acc1 %s : %f" % (mov_id, accuracy_test1 * 100.0))
@@ -314,7 +314,7 @@ class MulticlassModellingAllEmo:
             print("Best params: {},{} merror: {}".format(best_params2[0], best_params2[1], min_mae2))
 
             clf.set_params(subsample=best_params2[0], colsample_bytree=best_params2[1])
-            clf.fit(x_train_sample, y_train_sample, eval_metric='merror')
+            clf.fit(x_train_sample, y_train_sample)
             predictions_test = clf.predict(x_test)
             accuracy_test2 = accuracy_score(y_test, predictions_test)
             print("Final Acc2 %s : %f" % (mov_id, accuracy_test2 * 100.0))
@@ -354,7 +354,7 @@ class MulticlassModellingAllEmo:
             print("Best params: {}, merror: {}".format(best_params3, min_mae3))
 
             clf.set_params(learning_rate=best_params3)
-            clf.fit(x_train_sample, y_train_sample, eval_metric='merror')
+            clf.fit(x_train_sample, y_train_sample)
             predictions_test = clf.predict(x_test)
             accuracy_test3 = accuracy_score(y_test, predictions_test)
             print("Final Acc3 %s : %f" % (mov_id, accuracy_test3 * 100.0))
@@ -375,7 +375,7 @@ class MulticlassModellingAllEmo:
                                         n_estimators=n_estimator, max_depth=max_depth,
                                         min_child_weight=min_child_weight, gamma=0, subsample=subsample,
                                         colsample_bytree=col_sample_by_tree, max_delta_step=10)
-                clf.fit(x_train_sample, y_train_sample, eval_metric='merror')
+                clf.fit(x_train_sample, y_train_sample)
                 predictions_test = clf.predict(x_test)
                 accuracy_test4 = accuracy_score(y_test, predictions_test)
 
@@ -390,7 +390,7 @@ class MulticlassModellingAllEmo:
                                     learning_rate=learning_rate, n_estimators=n_estimator_new, max_depth=max_depth,
                                     min_child_weight=min_child_weight, gamma=0, subsample=subsample,
                                     colsample_bytree=col_sample_by_tree, max_delta_step=10)
-            clf.fit(x_train_sample, y_train_sample, eval_metric='merror')
+            clf.fit(x_train_sample, y_train_sample)
             predictions_test = clf.predict(x_test)
             accuracy_test5 = accuracy_score(y_test, predictions_test)
             print("Final Acc4 %s : %f" % (mov_id, accuracy_test5 * 100.0))
@@ -408,7 +408,7 @@ class MulticlassModellingAllEmo:
                                     n_estimators=n_estimator_new, max_depth=max_depth,
                                     min_child_weight=min_child_weight, gamma=0, subsample=subsample,
                                     colsample_bytree=col_sample_by_tree, max_delta_step=10)
-            clf.fit(x_train_sample, y_train_sample, eval_metric='merror')
+            clf.fit(x_train_sample, y_train_sample)
 
             # Feature importance
             fi_scores = clf.feature_importances_
