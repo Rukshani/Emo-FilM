@@ -1,15 +1,15 @@
 """
 @author Rukshani Somarathna
 
-This script models the 4-multiclass emotion prediction using the Leave-One-Film-Out (LOFO) XGBClassifier.
+This script models the 4-multiclass emotion prediction using the Leave-One-Film-Out (LOFO) classifier.
 """
 
 import itertools
 
 import numpy as np
 import pandas as pd
-import xgboost as xgb
 from matplotlib import pyplot as plt
+from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score, confusion_matrix, f1_score
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import MinMaxScaler
@@ -17,7 +17,7 @@ from sklearn.preprocessing import MinMaxScaler
 import EmoFilMDataFields
 
 
-class MulticlassModellingAllEmo:
+class MulticlassModellingFourClass:
 
     def __init__(self):
         # Accessing variables from EmoFilMDataFields class
@@ -34,7 +34,7 @@ class MulticlassModellingAllEmo:
 
     # Plot confusion matrix
     def plot_confusion_matrix_custom(self, y_test_list, predicted_labels_list, classes, normalize=True,
-                                     title='Confusion matrix'):
+                                     title=''):
         cnf_matrix = confusion_matrix(y_test_list, predicted_labels_list)
         np.set_printoptions(precision=2)
 
@@ -47,12 +47,12 @@ class MulticlassModellingAllEmo:
         else:
             print('Confusion matrix, without normalization')
 
-        plt.figure(figsize=(10, 8))
+        plt.figure(figsize=(6, 4))
         plt.imshow(cnf_matrix, interpolation='nearest', cmap=plt.get_cmap('Blues'))
         plt.title(title)
         plt.colorbar()
         tick_marks = np.arange(len(classes))
-        plt.xticks(tick_marks, classes, rotation=90, size=15)
+        plt.xticks(tick_marks, classes, rotation=45, size=15)
         plt.yticks(tick_marks, classes, size=15)
 
         fmt = '.2f' if normalize else 'd'
@@ -60,12 +60,12 @@ class MulticlassModellingAllEmo:
 
         for i, j in itertools.product(range(cnf_matrix.shape[0]), range(cnf_matrix.shape[1])):
             plt.text(j, i, format(cnf_matrix[i, j], fmt), horizontalalignment="center",
-                     color="white" if cnf_matrix[i, j] > thresh else "black")
+                     color="white" if cnf_matrix[i, j] > thresh else "black", fontsize=15)
 
         plt.tight_layout()
         plt.ylabel('True label', size=15)
         plt.xlabel('Predicted label', size=15)
-
+        plt.savefig('MulticlassModellingFourClassCM.png', dpi=300, bbox_inches='tight')
         plt.show()
 
     # Leave-One-Film-Out (LOFO) XGBClassifier modelling for 4-multiclass emotion prediction
@@ -75,7 +75,7 @@ class MulticlassModellingAllEmo:
         df_scaled_csv = self.scale_data(df, self.sorted_grid_items + self.sorted_discrete_items)
 
         df_scaled = df_scaled_csv.copy()
-        df_scaled['MultiEmotion_Max'] = np.NaN
+        df_scaled['MultiEmotion_Max'] = np.nan
 
         for index, row in df_scaled.iterrows():
             love_value = row['Love']
@@ -102,14 +102,18 @@ class MulticlassModellingAllEmo:
             mean_array = [pos_other_mean, pos_self_mean, neg_self_mean, neg_other_mean]
             max_index = np.argmax(mean_array)
 
+            # 'POS_Other'
             if max_index == 0:
-                df_scaled['MultiEmotion_Max'][index] = 'POS_Other'
+                df_scaled['MultiEmotion_Max'][index] = 0
+            # 'POS_Self'
             elif max_index == 1:
-                df_scaled['MultiEmotion_Max'][index] = 'POS_Self'
+                df_scaled['MultiEmotion_Max'][index] = 1
+            # 'NEG_Self'
             elif max_index == 2:
-                df_scaled['MultiEmotion_Max'][index] = 'NEG_Self'
+                df_scaled['MultiEmotion_Max'][index] = 2
+            # 'NEG_Other'
             elif max_index == 3:
-                df_scaled['MultiEmotion_Max'][index] = 'NEG_Other'
+                df_scaled['MultiEmotion_Max'][index] = 3
 
         # Print chance level which is used as the baseline
         print((df_scaled['MultiEmotion_Max'].value_counts().max() / df_scaled[
@@ -165,9 +169,8 @@ class MulticlassModellingAllEmo:
             x_train, x_val, y_train, y_val = train_test_split(x_train, y_train, test_size=0.2, random_state=42)
 
             # The hyperparameters were found using the GridSearchCV method. The best hyperparameters were used to model.
-            clf = xgb.XGBClassifier(objective='multi:softmax', num_class=4, eval_metric='merror', random_state=42,
-                                    seed=27, n_jobs=10, learning_rate=0.1, n_estimators=600, max_depth=40)
-            clf.fit(x_train, y_train, eval_metric='merror')
+            clf = RandomForestClassifier(random_state=42)
+            clf.fit(x_train, y_train)
 
             y_predict = clf.predict(x_test)
 
@@ -195,8 +198,11 @@ class MulticlassModellingAllEmo:
         print(np.std(f1_list, ddof=1))
 
         # Plot confusion matrix
-        self.plot_confusion_matrix_custom(actual_targets, predicted_targets, clf.classes_)
+        print(clf.classes_)
+        # self.plot_confusion_matrix_custom(actual_targets, predicted_targets, clf.classes_)
+        self.plot_confusion_matrix_custom(actual_targets, predicted_targets, ['POS_Other', 'POS_Self',
+                                                                              'NEG_Self', 'NEG_Other'])
 
 
-multi_class_modelling_all_emo = MulticlassModellingAllEmo()
+multi_class_modelling_all_emo = MulticlassModellingFourClass()
 multi_class_modelling_all_emo.model_xgb_lofo_four_class()
